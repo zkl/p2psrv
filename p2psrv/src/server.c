@@ -120,9 +120,7 @@ void * pserver_events(void * parm)
 int pserver_set_no_blocking(int fd)
 {
 	if(fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0) == -1))
-	{
 		return -1;
-	}
 }
 
 int pserver_set_keep_alive(int fd, int time, int check_time, int check_cnt)
@@ -132,28 +130,20 @@ int pserver_set_keep_alive(int fd, int time, int check_time, int check_cnt)
 	optval = 1;
 
 	if(setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen))
-	{
 		return -1;
-	}
 
 	optval = time;
 
 	if(setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &optval, optlen))
-	{
 		return -2;
-	}
 
 	optval = check_time;
 	if(setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &optval, optlen))
-	{
 		return -3;
-	}
 
 	optval = check_cnt;
 	if(setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &optval, optlen))
-	{
 		return -4;
-	}
 
 	return 0;
 }

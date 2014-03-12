@@ -40,4 +40,9 @@ extern pclient_t * pclient_create(int fd);
 extern void pclient_destroy(pclient_t * client);
 extern int pclient_proc_message(pserver_t * server, pclient_t * client);
 
+void client_create();
+void client_delete();
+void client_data_recv();
+void client_data_send();
+
 #endif
