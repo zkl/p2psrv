@@ -3,6 +3,8 @@
 #include <time.h>
 #include "log.h"
 
+#define MAX_BUF_SIZE 2048
+
 void log_ptime()
 {
 	char num_str[][3] = {
@@ -33,11 +35,11 @@ void log_alert(const char * format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	char str[1024];
+	char str[MAX_BUF_SIZE+1];
 
 	log_ptime();
 	printf("[alert] - ");
-	if(vsnprintf(str, 1024, format, ap))
+	if(vsnprintf(str, MAX_BUF_SIZE, format, ap))
 		printf("%s\n", str);
 	
 	va_end(ap);
@@ -46,11 +48,11 @@ void log_error(const char * format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	char str[1024];
+	char str[MAX_BUF_SIZE+1];
 
 	log_ptime();
 	printf("[error] - ");
-	if(vsnprintf(str, 1024, format, ap))
+	if(vsnprintf(str, MAX_BUF_SIZE, format, ap))
 		printf("%s\n", str);
 	
 	va_end(ap);
@@ -59,11 +61,11 @@ void log_debug(const char * format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	char str[1024];
+	char str[MAX_BUF_SIZE+1];
 
 	log_ptime();
 	printf("[debug] - ");
-	if(vsnprintf(str, 1024, format, ap))
+	if(vsnprintf(str, MAX_BUF_SIZE, format, ap))
 		printf("%s\n", str);
 	
 	va_end(ap);
@@ -72,11 +74,11 @@ void log_print(const char * format, ...)
 {
 	va_list ap;
 	va_start(ap, format);
-	char str[1024];
+	char str[MAX_BUF_SIZE+1];
 
 	log_ptime();
 	printf("[print] - ");
-	if(vsnprintf(str, 1024, format, ap))
+	if(vsnprintf(str, MAX_BUF_SIZE, format, ap))
 		printf("%s\n", str);
 	
 	va_end(ap);

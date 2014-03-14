@@ -42,7 +42,9 @@ extern int pclient_proc_message(pserver_t * server, pclient_t * client);
 
 void client_create();
 void client_delete();
-void client_data_recv();
-void client_data_send();
+
+void client_time_out();
+void client_data_arrived();
+void client_data_sendto();
 
 #endif
