@@ -21,6 +21,9 @@
 #include "pworker.h"
 #include "log.h"
 
+void * pserver_accept(pserver_t * server);
+void * pserver_datain(pclient_t * client);
+void * pserver_dataot(pclient_t * client);
 
 /* 新客户端上线 */
 void * pserver_accept(pserver_t * server)
@@ -44,8 +47,8 @@ void * pserver_accept(pserver_t * server)
 		pserver_data_t * data = (pserver_data_t *)malloc(
 			sizeof(pserver_data_t));
 
-		data->listen_fd = new_fd;
-		data->ptr = pclient_create(new_fd);
+		data->fd = new_fd;
+		data->client = pclient_create(new_fd, server);
 	
 		struct epoll_event ev;
 		ev.events = EPOLLIN | EPOLLET | EPOLLOUT | EPOLLERR;
@@ -66,55 +69,10 @@ void * pserver_accept(pserver_t * server)
 	return 0;
 }
 
-/* 客户端事件 */
-void * pserver_events(void * parm)
+void pserver_outline(pserver_t * server, pclient_t * client)
 {
-	// 客户端消息处理 调用个消息分发函数
-	pserver_task_t * task = (pserver_task_t *)parm;
-
-	int ret = 0;
-	switch(task->event)
-	{
-	case PSERVER_NEW_CONNECT:
-		pserver_accept(task->server);
-		break;
-	case PSERVER_SOCKET_EVENT:
-		{
-			pserver_data_t * pdata = task->ev.data.ptr;
-			pclient_t * client =  pdata->ptr;	
-			if(ret == 0 && (task->ev.events & EPOLLIN))
-			{
-				ret = client->proc_msg(task->server, PCLIENT_IN_EVENT, 
-					client);
-			}
-
-			if(ret == 0 && (task->ev.events & EPOLLOUT))
-			{
-				ret = client->proc_msg(task->server, PCLIENT_OUT_EVENT, 
-					client);
-			}
-
-			if(ret == 0 && (task->ev.events & EPOLLERR))
-			{
-				ret = client->proc_msg(task->server, PCLIENT_ERROR_EVENT, 
-					client);
-			}
-
-			if(ret != 0)
-			{
-				log_debug("客户端下线");
-				epoll_ctl(task->server->kdpfd, EPOLL_CTL_DEL, 
-					pdata->listen_fd, 0);
-		
-				close(pdata->listen_fd);
-				pclient_destroy(client);
-				free(pdata);
-				task->server->client_num--;
-			}
-			break;
-		}
-	}
-	free(task);
+		epoll_ctl(server->kdpfd, EPOLL_CTL_DEL, client->listen_fd, 0);
+		server->client_num--;
 }
 
 int pserver_set_no_blocking(int fd)
@@ -123,11 +81,13 @@ int pserver_set_no_blocking(int fd)
 		return -1;
 }
 
-int pserver_set_keep_alive(int fd, int time, int check_time, int check_cnt)
+int pserver_set_keep_alive(int fd, int time, int check_time, 
+	int check_cnt)
 {
 	int optval;
 	socklen_t optlen = sizeof(optval);
 	optval = 1;
+
 
 	if(setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &optval, optlen))
 		return -1;
@@ -207,11 +167,12 @@ void pserver_init(pserver_t * server, int max_listen, int port)
 	ev.events = EPOLLIN | EPOLLET;
 	ev.data.ptr = data;
 	
-	ret = epoll_ctl(server->kdpfd, EPOLL_CTL_ADD, server->listen_fd, &ev);
+	ret = epoll_ctl(server->kdpfd, EPOLL_CTL_ADD, server->listen_fd,
+		&ev);
 	if(ret < 0)
 	{
-			server->is_actived = 0;
-			return ;
+		server->is_actived = 0;
+		return ;
 	}
 }
 
@@ -231,10 +192,7 @@ void pserver_exec(pserver_t * server)
 			server->client_num, -1);
 
 		if(nfds == -1)
-		{
-			perror("epoll_wait");
 			break;
-		}
 
 		int i;
 		for(i = 0; i<nfds; i++)
@@ -242,14 +200,31 @@ void pserver_exec(pserver_t * server)
 			pserver_task_t * task = (pserver_task_t *)malloc(
 				sizeof(pserver_task_t));
 
-			pserver_data_t * data = (pserver_data_t * )events[i].data.ptr;
-			if(data->listen_fd == server->listen_fd) // 监听网络描述符
+			pserver_data_t * data = 
+				(pserver_data_t * )events[i].data.ptr;
+
+			// 监听网络描述符
+			if(data->listen_fd == server->listen_fd)
 			{
 				task->event = PSERVER_NEW_CONNECT;
 				task->server = server;
+
+				pworker_append(&server->worker, pserver_accept, 
+					server);
 			}
 			else
 			{
+				if(ret == 0 && (task->ev.events & EPOLLIN))
+				{
+				}
+
+				if(ret == 0 && (task->ev.events & EPOLLOUT))
+				{
+				}
+	
+				if(ret == 0 && (task->ev.events & EPOLLERR))
+				{
+				}
 				task->event = PSERVER_SOCKET_EVENT;
 				task->server = server;
 				task->ev = events[i];

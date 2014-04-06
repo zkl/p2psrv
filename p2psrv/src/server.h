@@ -28,17 +28,11 @@ typedef struct _pserver
 	ptimer_t  timer;
 }pserver_t;
 
-typedef struct _pserver_data
+typedef struct _pserver_data_t
 {
-	int listen_fd;
-	void * ptr;
+	int fd;
+	pclient_t * client;
 }pserver_data_t;
-
-typedef enum _pserver_task_event
-{
-	PSERVER_NEW_CONNECT,
-	PSERVER_SOCKET_EVENT,
-}pserver_task_event_t;
 
 typedef struct _pserver_task_t
 {
@@ -51,5 +45,6 @@ void pserver_init(pserver_t * server, int max_listen, int port);
 void pserver_exec(pserver_t * server);
 void pserver_quit(pserver_t * server);
 void pserver_destroy(pserver_t * server);
+void pserver_outline(pserver_t * server, pclient_t * client);
 
 #endif

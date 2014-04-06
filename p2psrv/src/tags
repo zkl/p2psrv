@@ -16,6 +16,7 @@ LOG_DEBUG	log.h	12;"	d
 LOG_ERROR	log.h	11;"	d
 LOG_H	log.h	2;"	d
 LOG_PRINT	log.h	9;"	d
+MAX_BUF_SIZE	log.c	6;"	d	file:
 MAX_EPOLL_SIZE	server.h	16;"	d
 OBJ	Makefile	/^OBJ = server.o main.o pclient.o list.o pworker.o log.o ptimer.o \\$/;"	m
 PCLIENT_DEBUG_OUT	pclient.h	4;"	d
@@ -24,139 +25,215 @@ PCLIENT_H	pclient.h	2;"	d
 PCLIENT_IN_EVENT	pclient.h	/^	PCLIENT_IN_EVENT,$/;"	e	enum:_pclient_event
 PCLIENT_OUT_EVENT	pclient.h	/^	PCLIENT_OUT_EVENT,$/;"	e	enum:_pclient_event
 PCLIENT_TIMER_EVENT	pclient.h	/^	PCLIENT_TIMER_EVENT,$/;"	e	enum:_pclient_event
-PSERVER_NEW_CONNECT	server.h	/^	PSERVER_NEW_CONNECT,$/;"	e	enum:_pserver_task_event
-PSERVER_SOCKET_EVENT	server.h	/^	PSERVER_SOCKET_EVENT,$/;"	e	enum:_pserver_task_event
 PTIMER_H	ptimer.h	2;"	d
 QUEUE_H	queue.h	2;"	d
 SERVER_H	server.h	2;"	d
 TAG	Makefile	/^TAG = p2psrv$/;"	m
 WORKER_H	pworker.h	2;"	d
 _list_	list.h	/^typedef struct _list_$/;"	s
+_list_::head	list.h	/^	struct _list_node_ *head;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_	access:public
+_list_::last	list.h	/^	struct _list_node_ *last;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_	access:public
+_list_::size	list.h	/^	int size;$/;"	m	struct:_list_	access:public
 _list_node_	list.h	/^typedef struct _list_node_$/;"	s
+_list_node_::data	list.h	/^	data_t data;$/;"	m	struct:_list_node_	access:public
+_list_node_::next	list.h	/^	struct _list_node_ *next;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_	access:public
+_list_node_::prev	list.h	/^	struct _list_node_ *prev;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_	access:public
 _pclient	pclient.h	/^typedef struct _pclient$/;"	s
-_pclient_data	pclient.h	/^typedef struct _pclient_data$/;"	s
+_pclient::inqueue	pclient.h	/^	queue_t * inqueue;$/;"	m	struct:_pclient	access:public
+_pclient::listen_fd	pclient.h	/^	int listen_fd;$/;"	m	struct:_pclient	access:public
+_pclient::m_mutex	pclient.h	/^	pthread_mutex_t m_mutex;$/;"	m	struct:_pclient	access:public
+_pclient::outqueue	pclient.h	/^	queue_t * outqueue;$/;"	m	struct:_pclient	access:public
+_pclient::ptr	pclient.h	/^	void * ptr;$/;"	m	struct:_pclient	access:public
+_pclient::server	pclient.h	/^	pserver_t * server;$/;"	m	struct:_pclient	access:public
 _pclient_event	pclient.h	/^typedef enum _pclient_event{$/;"	g
 _pserver	server.h	/^typedef struct _pserver$/;"	s
-_pserver_data	server.h	/^typedef struct _pserver_data$/;"	s
-_pserver_task_event	server.h	/^typedef enum _pserver_task_event$/;"	g
+_pserver::addr	server.h	/^	struct sockaddr_in addr;$/;"	m	struct:_pserver	typeref:struct:_pserver::sockaddr_in	access:public
+_pserver::client_num	server.h	/^	int client_num;$/;"	m	struct:_pserver	access:public
+_pserver::is_actived	server.h	/^	int is_actived;$/;"	m	struct:_pserver	access:public
+_pserver::kdpfd	server.h	/^	int kdpfd;$/;"	m	struct:_pserver	access:public
+_pserver::listen_fd	server.h	/^	int listen_fd;$/;"	m	struct:_pserver	access:public
+_pserver::listen_port	server.h	/^	int listen_port;$/;"	m	struct:_pserver	access:public
+_pserver::max_listen_num	server.h	/^	int max_listen_num;$/;"	m	struct:_pserver	access:public
+_pserver::timer	server.h	/^	ptimer_t  timer;$/;"	m	struct:_pserver	access:public
+_pserver::worker	server.h	/^	pworker_t worker;$/;"	m	struct:_pserver	access:public
+_pserver_data_t	server.h	/^typedef struct _pserver_data_t$/;"	s
+_pserver_data_t::client	server.h	/^	pclient_t * client;$/;"	m	struct:_pserver_data_t	access:public
+_pserver_data_t::fd	server.h	/^	int fd;$/;"	m	struct:_pserver_data_t	access:public
 _pserver_task_t	server.h	/^typedef struct _pserver_task_t$/;"	s
+_pserver_task_t::ev	server.h	/^	struct epoll_event ev;$/;"	m	struct:_pserver_task_t	typeref:struct:_pserver_task_t::epoll_event	access:public
+_pserver_task_t::event	server.h	/^	pserver_task_event_t event;$/;"	m	struct:_pserver_task_t	access:public
+_pserver_task_t::server	server.h	/^	pserver_t * server;$/;"	m	struct:_pserver_task_t	access:public
 _ptimer	ptimer.h	/^typedef struct _ptimer$/;"	s
+_ptimer::cv	ptimer.h	/^	pthread_cond_t cv;$/;"	m	struct:_ptimer	access:public
+_ptimer::events	ptimer.h	/^	list_t * events;$/;"	m	struct:_ptimer	access:public
+_ptimer::goon	ptimer.h	/^	int goon;$/;"	m	struct:_ptimer	access:public
+_ptimer::mp	ptimer.h	/^	pthread_mutex_t mp;$/;"	m	struct:_ptimer	access:public
+_ptimer::tid	ptimer.h	/^	pthread_t tid;$/;"	m	struct:_ptimer	access:public
 _ptimer_timer	ptimer.c	/^typedef struct  _ptimer_timer$/;"	s	file:
+_ptimer_timer::data	ptimer.c	/^	void * data;$/;"	m	struct:_ptimer_timer	file:	access:public
+_ptimer_timer::delay	ptimer.c	/^	unsigned int delay;$/;"	m	struct:_ptimer_timer	file:	access:public
+_ptimer_timer::worker	ptimer.c	/^	worker_t worker;$/;"	m	struct:_ptimer_timer	file:	access:public
 _pworker	pworker.h	/^typedef struct _pworker$/;"	s
+_pworker::goon	pworker.h	/^	int goon;$/;"	m	struct:_pworker	access:public
+_pworker::mp	pworker.h	/^	pthread_mutex_t mp;$/;"	m	struct:_pworker	access:public
+_pworker::sem	pworker.h	/^	sem_t sem;$/;"	m	struct:_pworker	access:public
+_pworker::task_list	pworker.h	/^	list_t * task_list;$/;"	m	struct:_pworker	access:public
+_pworker::work_thread_list	pworker.h	/^	list_t * work_thread_list;$/;"	m	struct:_pworker	access:public
 _pworker_data	pworker.c	/^typedef struct  _pworker_data$/;"	s	file:
+_pworker_data::data	pworker.c	/^	void * data;$/;"	m	struct:_pworker_data	file:	access:public
+_pworker_data::task	pworker.c	/^	task_t task;$/;"	m	struct:_pworker_data	file:	access:public
 _queue_	queue.h	/^typedef struct _queue_$/;"	s
-addr	server.h	/^	struct sockaddr_in addr;$/;"	m	struct:_pserver	typeref:struct:_pserver::sockaddr_in
-client_num	server.h	/^	int client_num;$/;"	m	struct:_pserver
-cv	ptimer.h	/^	pthread_cond_t cv;$/;"	m	struct:_ptimer
-data	list.h	/^	data_t data;$/;"	m	struct:_list_node_
-data	ptimer.c	/^	void * data;$/;"	m	struct:_ptimer_timer	file:
-data	pworker.c	/^	void * data;$/;"	m	struct:_pworker_data	file:
+_queue_::head	queue.h	/^	char * head;$/;"	m	struct:_queue_	access:public
+_queue_::rear	queue.h	/^	char * rear;$/;"	m	struct:_queue_	access:public
+_queue_::size	queue.h	/^	int size;$/;"	m	struct:_queue_	access:public
+addr	server.h	/^	struct sockaddr_in addr;$/;"	m	struct:_pserver	typeref:struct:_pserver::sockaddr_in	access:public
+client	server.h	/^	pclient_t * client;$/;"	m	struct:_pserver_data_t	access:public
+client_num	server.h	/^	int client_num;$/;"	m	struct:_pserver	access:public
+cv	ptimer.h	/^	pthread_cond_t cv;$/;"	m	struct:_ptimer	access:public
+data	list.h	/^	data_t data;$/;"	m	struct:_list_node_	access:public
+data	ptimer.c	/^	void * data;$/;"	m	struct:_ptimer_timer	file:	access:public
+data	pworker.c	/^	void * data;$/;"	m	struct:_pworker_data	file:	access:public
 data_t	list.h	/^typedef void * data_t;$/;"	t
-delay	ptimer.c	/^	unsigned int delay;$/;"	m	struct:_ptimer_timer	file:
-ev	server.h	/^	struct epoll_event ev;$/;"	m	struct:_pserver_task_t	typeref:struct:_pserver_task_t::epoll_event
-event	server.h	/^	pserver_task_event_t event;$/;"	m	struct:_pserver_task_t
-events	ptimer.h	/^	list_t * events;$/;"	m	struct:_ptimer
-goon	ptimer.h	/^	int goon;$/;"	m	struct:_ptimer
-goon	pworker.h	/^	int goon;$/;"	m	struct:_pworker
-handle_msg	pclient.h	/^	pclient_handle_msg handle_msg;$/;"	m	struct:_pclient_data
-head	list.h	/^	struct _list_node_ *head;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_
-head	queue.h	/^	char * head;$/;"	m	struct:_queue_
-inmp	pclient.h	/^	pthread_mutex_t inmp;$/;"	m	struct:_pclient
-inqueue	pclient.h	/^	queue_t inqueue;$/;"	m	struct:_pclient_data
-is_actived	server.h	/^	int is_actived;$/;"	m	struct:_pserver
-kdpfd	server.h	/^	int kdpfd;$/;"	m	struct:_pserver
-last	list.h	/^	struct _list_node_ *last;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_
-list_append	list.c	/^void list_append(list_t * list, data_t data)$/;"	f
-list_create	list.c	/^list_t * list_create(void)$/;"	f
-list_datacmp	list.c	/^int list_datacmp(data_t des, data_t src)$/;"	f
-list_delnde	list.c	/^list_node_t * list_delnde(list_t * list, list_node_t * node)$/;"	f
-list_destroy	list.c	/^void list_destroy(list_t * list)$/;"	f
-list_info	list.c	/^void list_info(list_t * list)$/;"	f
-list_insert	list.c	/^void list_insert(list_t * list, list_node_t * pnode, data_t data)$/;"	f
-list_insertl2	list.c	/^void list_insertl2 (list_t * list, data_t data, int position)$/;"	f
+delay	ptimer.c	/^	unsigned int delay;$/;"	m	struct:_ptimer_timer	file:	access:public
+ev	server.h	/^	struct epoll_event ev;$/;"	m	struct:_pserver_task_t	typeref:struct:_pserver_task_t::epoll_event	access:public
+event	server.h	/^	pserver_task_event_t event;$/;"	m	struct:_pserver_task_t	access:public
+events	ptimer.h	/^	list_t * events;$/;"	m	struct:_ptimer	access:public
+fd	server.h	/^	int fd;$/;"	m	struct:_pserver_data_t	access:public
+goon	ptimer.h	/^	int goon;$/;"	m	struct:_ptimer	access:public
+goon	pworker.h	/^	int goon;$/;"	m	struct:_pworker	access:public
+head	list.h	/^	struct _list_node_ *head;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_	access:public
+head	queue.h	/^	char * head;$/;"	m	struct:_queue_	access:public
+inqueue	pclient.h	/^	queue_t * inqueue;$/;"	m	struct:_pclient	access:public
+is_actived	server.h	/^	int is_actived;$/;"	m	struct:_pserver	access:public
+kdpfd	server.h	/^	int kdpfd;$/;"	m	struct:_pserver	access:public
+last	list.h	/^	struct _list_node_ *last;$/;"	m	struct:_list_	typeref:struct:_list_::_list_node_	access:public
+list_append	list.c	/^void list_append(list_t * list, data_t data)$/;"	f	signature:(list_t * list, data_t data)
+list_append	list.h	/^void list_append(list_t * list, data_t data);$/;"	p	signature:(list_t * list, data_t data)
+list_create	list.c	/^list_t * list_create(void)$/;"	f	signature:(void)
+list_create	list.h	/^list_t * list_create(void);$/;"	p	signature:(void)
+list_datacmp	list.c	/^int list_datacmp(data_t des, data_t src)$/;"	f	signature:(data_t des, data_t src)
+list_delnde	list.c	/^list_node_t * list_delnde(list_t * list, list_node_t * node)$/;"	f	signature:(list_t * list, list_node_t * node)
+list_delnde	list.h	/^list_node_t * list_delnde (list_t * list, list_node_t * node);$/;"	p	signature:(list_t * list, list_node_t * node)
+list_destroy	list.c	/^void list_destroy(list_t * list)$/;"	f	signature:(list_t * list)
+list_destroy	list.h	/^void list_destroy(list_t * list);$/;"	p	signature:(list_t * list)
+list_info	list.c	/^void list_info(list_t * list)$/;"	f	signature:(list_t * list)
+list_info	list.h	/^void list_info(list_t * list);$/;"	p	signature:(list_t * list)
+list_insert	list.c	/^void list_insert(list_t * list, list_node_t * pnode, data_t data)$/;"	f	signature:(list_t * list, list_node_t * pnode, data_t data)
+list_insert	list.h	/^void list_insert(list_t * list, list_node_t * pnode, data_t data);$/;"	p	signature:(list_t * list, list_node_t * pnode, data_t data)
+list_insertl2	list.c	/^void list_insertl2 (list_t * list, data_t data, int position)$/;"	f	signature:(list_t * list, data_t data, int position)
 list_node_t	list.h	/^}list_node_t;$/;"	t	typeref:struct:_list_node_
-list_nodeat	list.c	/^list_node_t * list_nodeat (list_t * list, int position)$/;"	f
-list_nodepos	list.c	/^int list_nodepos(list_t * list, list_node_t * node)$/;"	f
+list_nodeat	list.c	/^list_node_t * list_nodeat (list_t * list, int position)$/;"	f	signature:(list_t * list, int position)
+list_nodeat	list.h	/^list_node_t * list_nodeat(list_t * list, int pos);$/;"	p	signature:(list_t * list, int pos)
+list_nodepos	list.c	/^int list_nodepos(list_t * list, list_node_t * node)$/;"	f	signature:(list_t * list, list_node_t * node)
+list_nodepos	list.h	/^int list_nodepos(list_t * list, list_node_t * node);$/;"	p	signature:(list_t * list, list_node_t * node)
 list_t	list.h	/^}list_t;$/;"	t	typeref:struct:_list_
 list_t_H	list.h	10;"	d
-listen_fd	pclient.h	/^	int listen_fd;$/;"	m	struct:_pclient
-listen_fd	server.h	/^	int listen_fd;$/;"	m	struct:_pserver
-listen_fd	server.h	/^	int listen_fd;$/;"	m	struct:_pserver_data
-listen_port	server.h	/^	int listen_port;$/;"	m	struct:_pserver
-log_alert	log.c	/^void log_alert(const char * format, ...)$/;"	f
-log_debug	log.c	/^void log_debug(const char * format, ...)$/;"	f
-log_error	log.c	/^void log_error(const char * format, ...)$/;"	f
-log_print	log.c	/^void log_print(const char * format, ...)$/;"	f
+listen_fd	pclient.h	/^	int listen_fd;$/;"	m	struct:_pclient	access:public
+listen_fd	server.h	/^	int listen_fd;$/;"	m	struct:_pserver	access:public
+listen_port	server.h	/^	int listen_port;$/;"	m	struct:_pserver	access:public
+log_alert	log.c	/^void log_alert(const char * format, ...)$/;"	f	signature:(const char * format, ...)
+log_alert	log.h	/^void log_alert(const char * format, ...);$/;"	p	signature:(const char * format, ...)
+log_debug	log.c	/^void log_debug(const char * format, ...)$/;"	f	signature:(const char * format, ...)
+log_debug	log.h	/^void log_debug(const char * format, ...);$/;"	p	signature:(const char * format, ...)
+log_error	log.c	/^void log_error(const char * format, ...)$/;"	f	signature:(const char * format, ...)
+log_error	log.h	/^void log_error(const char * format, ...);$/;"	p	signature:(const char * format, ...)
+log_print	log.c	/^void log_print(const char * format, ...)$/;"	f	signature:(const char * format, ...)
+log_print	log.h	/^void log_print(const char * format, ...);$/;"	p	signature:(const char * format, ...)
 log_ptime	log.c	/^void log_ptime()$/;"	f
-main	main.c	/^int main(int argc, char * argv[])$/;"	f
-max_listen_num	server.h	/^	int max_listen_num;$/;"	m	struct:_pserver
-mp	ptimer.h	/^	pthread_mutex_t mp;$/;"	m	struct:_ptimer
-mp	pworker.h	/^	pthread_mutex_t mp;$/;"	m	struct:_pworker
-next	list.h	/^	struct _list_node_ *next;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_
-outmp	pclient.h	/^	pthread_mutex_t outmp;$/;"	m	struct:_pclient
-outqueue	pclient.h	/^	queue_t outqueue;$/;"	m	struct:_pclient_data
-pclient_create	pclient.c	/^pclient_t * pclient_create(int fd)$/;"	f
-pclient_data_t	pclient.h	/^}pclient_data_t;$/;"	t	typeref:struct:_pclient_data
-pclient_destroy	pclient.c	/^void pclient_destroy(pclient_t * client)$/;"	f
+m_mutex	pclient.h	/^	pthread_mutex_t m_mutex;$/;"	m	struct:_pclient	access:public
+main	main.c	/^int main(int argc, char * argv[])$/;"	f	signature:(int argc, char * argv[])
+max_listen_num	server.h	/^	int max_listen_num;$/;"	m	struct:_pserver	access:public
+mp	ptimer.h	/^	pthread_mutex_t mp;$/;"	m	struct:_ptimer	access:public
+mp	pworker.h	/^	pthread_mutex_t mp;$/;"	m	struct:_pworker	access:public
+next	list.h	/^	struct _list_node_ *next;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_	access:public
+outqueue	pclient.h	/^	queue_t * outqueue;$/;"	m	struct:_pclient	access:public
+pclient_create	pclient.c	/^pclient_t * pclient_create(int fd, pserver_t * server)$/;"	f	signature:(int fd, pserver_t * server)
+pclient_create	pclient.h	/^pclient_t * pclient_create(int fd, pserver_t * server);$/;"	p	signature:(int fd, pserver_t * server)
+pclient_data_in	pclient.h	/^void pclient_data_in (pclient_t * client);$/;"	p	signature:(pclient_t * client)
+pclient_data_out	pclient.h	/^void pclient_data_out(pclient_t * client);$/;"	p	signature:(pclient_t * client)
+pclient_destroy	pclient.h	/^extern void pclient_destroy(pclient_t * client);$/;"	p	signature:(pclient_t * client)
 pclient_event_t	pclient.h	/^}pclient_event_t;$/;"	t	typeref:enum:_pclient_event
-pclient_handle_error	pclient.c	/^int pclient_handle_error(pserver_t * server, void * ptr)$/;"	f
-pclient_handle_in	pclient.c	/^int pclient_handle_in(pserver_t * server, void * ptr)$/;"	f
-pclient_handle_msg	pclient.h	/^typedef int (*pclient_handle_msg)(pserver_t * server, pclient_t * client);$/;"	t
-pclient_handle_out	pclient.c	/^int pclient_handle_out(pserver_t * server, void * ptr)$/;"	f
+pclient_free	pclient.c	/^void pclient_free(pclient_t * client)$/;"	f	signature:(pclient_t * client)
+pclient_free	pclient.h	/^void pclient_free(pclient_t * client);$/;"	p	signature:(pclient_t * client)
 pclient_proc	pclient.h	/^typedef int (*pclient_proc)(pserver_t * server, pclient_event_t event, $/;"	t
-pclient_proc_default	pclient.c	/^int pclient_proc_default(pserver_t * server, pclient_event_t event,$/;"	f
-pclient_proc_message	pclient_base.c	/^int pclient_proc_message(pserver_t * server, pclient_t * client)$/;"	f
+pclient_proc_message	pclient.h	/^extern int pclient_proc_message(pserver_t * server, pclient_t * client);$/;"	p	signature:(pserver_t * server, pclient_t * client)
+pclient_proc_message	pclient_base.c	/^int pclient_proc_message(pserver_t * server, pclient_t * client)$/;"	f	signature:(pserver_t * server, pclient_t * client)
 pclient_t	pclient.h	/^}pclient_t;$/;"	t	typeref:struct:_pclient
-prev	list.h	/^	struct _list_node_ *prev;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_
-proc_msg	pclient.h	/^	pclient_proc proc_msg;$/;"	m	struct:_pclient
-pserver_accept	server.c	/^void * pserver_accept(pserver_t * server)$/;"	f
-pserver_data_t	server.h	/^}pserver_data_t;$/;"	t	typeref:struct:_pserver_data
-pserver_destroy	server.c	/^void pserver_destroy(pserver_t * server)$/;"	f
-pserver_events	server.c	/^void * pserver_events(void * parm)$/;"	f
-pserver_exec	server.c	/^void pserver_exec(pserver_t * server)$/;"	f
-pserver_init	server.c	/^void pserver_init(pserver_t * server, int max_listen, int port)$/;"	f
-pserver_quit	server.c	/^void pserver_quit(pserver_t * server)$/;"	f
-pserver_set_keep_alive	server.c	/^int pserver_set_keep_alive(int fd, int time, int check_time, int check_cnt)$/;"	f
-pserver_set_no_blocking	server.c	/^int pserver_set_no_blocking(int fd)$/;"	f
+pclient_time_out	pclient.h	/^void pclient_time_out(pclient_t * client);$/;"	p	signature:(pclient_t * client)
+prev	list.h	/^	struct _list_node_ *prev;$/;"	m	struct:_list_node_	typeref:struct:_list_node_::_list_node_	access:public
+pserver_accept	server.c	/^void * pserver_accept(pserver_t * server)$/;"	f	signature:(pserver_t * server)
+pserver_accept	server.c	/^void * pserver_accept(pserver_t * server);$/;"	p	file:	signature:(pserver_t * server)
+pserver_data_t	server.h	/^}pserver_data_t;$/;"	t	typeref:struct:_pserver_data_t
+pserver_datain	server.c	/^void * pserver_datain(pclient_t * client);$/;"	p	file:	signature:(pclient_t * client)
+pserver_dataot	server.c	/^void * pserver_dataot(pclient_t * client);$/;"	p	file:	signature:(pclient_t * client)
+pserver_destroy	server.c	/^void pserver_destroy(pserver_t * server)$/;"	f	signature:(pserver_t * server)
+pserver_destroy	server.h	/^void pserver_destroy(pserver_t * server);$/;"	p	signature:(pserver_t * server)
+pserver_events	server.c	/^void * pserver_events(void * parm)$/;"	f	signature:(void * parm)
+pserver_exec	server.c	/^void pserver_exec(pserver_t * server)$/;"	f	signature:(pserver_t * server)
+pserver_exec	server.h	/^void pserver_exec(pserver_t * server);$/;"	p	signature:(pserver_t * server)
+pserver_init	server.c	/^void pserver_init(pserver_t * server, int max_listen, int port)$/;"	f	signature:(pserver_t * server, int max_listen, int port)
+pserver_init	server.h	/^void pserver_init(pserver_t * server, int max_listen, int port);$/;"	p	signature:(pserver_t * server, int max_listen, int port)
+pserver_outline	server.h	/^void pserver_outline(pserver_t * server, pclient_t * client);$/;"	p	signature:(pserver_t * server, pclient_t * client)
+pserver_quit	server.c	/^void pserver_quit(pserver_t * server)$/;"	f	signature:(pserver_t * server)
+pserver_quit	server.h	/^void pserver_quit(pserver_t * server);$/;"	p	signature:(pserver_t * server)
+pserver_set_keep_alive	server.c	/^int pserver_set_keep_alive(int fd, int time, int check_time, $/;"	f	signature:(int fd, int time, int check_time, int check_cnt)
+pserver_set_no_blocking	server.c	/^int pserver_set_no_blocking(int fd)$/;"	f	signature:(int fd)
 pserver_t	server.h	/^}pserver_t;$/;"	t	typeref:struct:_pserver
-pserver_task_event_t	server.h	/^}pserver_task_event_t;$/;"	t	typeref:enum:_pserver_task_event
 pserver_task_t	server.h	/^}pserver_task_t;$/;"	t	typeref:struct:_pserver_task_t
-ptimer_append	ptimer.c	/^void ptimer_append(ptimer_t * timer, worker_t worke, $/;"	f
-ptimer_create	ptimer.c	/^void ptimer_create(ptimer_t * timer)$/;"	f
-ptimer_destroy	ptimer.c	/^void ptimer_destroy(ptimer_t * timer)$/;"	f
-ptimer_quit	ptimer.c	/^void ptimer_quit(ptimer_t * timer)$/;"	f
-ptimer_routine	ptimer.c	/^void * ptimer_routine(void * arg)$/;"	f
+ptimer_append	ptimer.c	/^void ptimer_append(ptimer_t * timer, worker_t worke, $/;"	f	signature:(ptimer_t * timer, worker_t worke, void * data, int delay)
+ptimer_append	ptimer.h	/^void ptimer_append(ptimer_t * timer, worker_t worker, void * data,$/;"	p	signature:(ptimer_t * timer, worker_t worker, void * data, int delay)
+ptimer_create	ptimer.c	/^void ptimer_create(ptimer_t * timer)$/;"	f	signature:(ptimer_t * timer)
+ptimer_create	ptimer.h	/^void ptimer_create(ptimer_t * timer);$/;"	p	signature:(ptimer_t * timer)
+ptimer_destroy	ptimer.c	/^void ptimer_destroy(ptimer_t * timer)$/;"	f	signature:(ptimer_t * timer)
+ptimer_destroy	ptimer.h	/^void ptimer_destroy(ptimer_t * timer);$/;"	p	signature:(ptimer_t * timer)
+ptimer_quit	ptimer.c	/^void ptimer_quit(ptimer_t * timer)$/;"	f	signature:(ptimer_t * timer)
+ptimer_quit	ptimer.h	/^void ptimer_quit(ptimer_t * timer);$/;"	p	signature:(ptimer_t * timer)
+ptimer_routine	ptimer.c	/^void * ptimer_routine(void * arg)$/;"	f	signature:(void * arg)
+ptimer_routine	ptimer.c	/^void * ptimer_routine(void * arg);$/;"	p	file:	signature:(void * arg)
 ptimer_t	ptimer.h	/^}ptimer_t;$/;"	t	typeref:struct:_ptimer
 ptimer_timer_t	ptimer.c	/^}ptimer_timer_t;$/;"	t	typeref:struct:_ptimer_timer	file:
-ptr	pclient.h	/^	void * ptr;$/;"	m	struct:_pclient
-ptr	server.h	/^	void * ptr;$/;"	m	struct:_pserver_data
-pworker_append	pworker.c	/^void pworker_append(pworker_t * worker, task_t task, void * data)$/;"	f
-pworker_create	pworker.c	/^void pworker_create(pworker_t * worker, int maxsize)$/;"	f
+ptr	pclient.h	/^	void * ptr;$/;"	m	struct:_pclient	access:public
+pworker_append	pworker.c	/^void pworker_append(pworker_t * worker, task_t task, void * data)$/;"	f	signature:(pworker_t * worker, task_t task, void * data)
+pworker_append	pworker.h	/^void pworker_append(pworker_t * worker, task_t task, void * data);$/;"	p	signature:(pworker_t * worker, task_t task, void * data)
+pworker_create	pworker.c	/^void pworker_create(pworker_t * worker, int maxsize)$/;"	f	signature:(pworker_t * worker, int maxsize)
+pworker_create	pworker.h	/^void pworker_create(pworker_t * worker, int max_size);$/;"	p	signature:(pworker_t * worker, int max_size)
 pworker_data_t	pworker.c	/^}pworker_data_t;$/;"	t	typeref:struct:_pworker_data	file:
-pworker_destroy	pworker.c	/^void pworker_destroy(pworker_t * worker)$/;"	f
-pworker_quit	pworker.c	/^void pworker_quit(pworker_t * worker)$/;"	f
-pworker_routine	pworker.c	/^void * pworker_routine(void * arg)$/;"	f
+pworker_destroy	pworker.c	/^void pworker_destroy(pworker_t * worker)$/;"	f	signature:(pworker_t * worker)
+pworker_destroy	pworker.h	/^void pworker_destroy(pworker_t * worker);$/;"	p	signature:(pworker_t * worker)
+pworker_quit	pworker.c	/^void pworker_quit(pworker_t * worker)$/;"	f	signature:(pworker_t * worker)
+pworker_quit	pworker.h	/^void pworker_quit(pworker_t * worker);$/;"	p	signature:(pworker_t * worker)
+pworker_routine	pworker.c	/^void * pworker_routine(void * arg)$/;"	f	signature:(void * arg)
+pworker_routine	pworker.c	/^void * pworker_routine(void * arg);$/;"	p	file:	signature:(void * arg)
 pworker_t	pworker.h	/^}pworker_t;$/;"	t	typeref:struct:_pworker
-queue_data	queue.c	/^char * queue_data(queue_t * q)$/;"	f
-queue_dequeue	queue.c	/^int queue_dequeue(queue_t * q, int size)$/;"	f
-queue_destroy	queue.c	/^int queue_destroy(queue_t * q)$/;"	f
-queue_enqueue	queue.c	/^int queue_enqueue(queue_t * q, int size)$/;"	f
-queue_init	queue.c	/^int queue_init(queue_t * q, int maxsize)$/;"	f
-queue_last	queue.c	/^char * queue_last(queue_t * q)$/;"	f
-queue_lift	queue.c	/^int queue_lift(queue_t * q)$/;"	f
-queue_size	queue.c	/^int queue_size(queue_t * q)$/;"	f
+queue_data	queue.c	/^char * queue_data(queue_t * q)$/;"	f	signature:(queue_t * q)
+queue_data	queue.h	/^char * queue_data(queue_t * q);$/;"	p	signature:(queue_t * q)
+queue_dequeue	queue.c	/^int queue_dequeue(queue_t * q, int size)$/;"	f	signature:(queue_t * q, int size)
+queue_dequeue	queue.h	/^int queue_dequeue(queue_t * q, int size);$/;"	p	signature:(queue_t * q, int size)
+queue_destroy	queue.c	/^int queue_destroy(queue_t * q)$/;"	f	signature:(queue_t * q)
+queue_destroy	queue.h	/^int queue_destroy(queue_t * q);$/;"	p	signature:(queue_t * q)
+queue_enqueue	queue.c	/^int queue_enqueue(queue_t * q, int size)$/;"	f	signature:(queue_t * q, int size)
+queue_enqueue	queue.h	/^int queue_enqueue(queue_t * q, int size);$/;"	p	signature:(queue_t * q, int size)
+queue_init	queue.c	/^int queue_init(queue_t * q, int maxsize)$/;"	f	signature:(queue_t * q, int maxsize)
+queue_init	queue.h	/^int queue_init(queue_t * q, int maxsize);$/;"	p	signature:(queue_t * q, int maxsize)
+queue_last	queue.c	/^char * queue_last(queue_t * q)$/;"	f	signature:(queue_t * q)
+queue_last	queue.h	/^char * queue_last(queue_t * q);$/;"	p	signature:(queue_t * q)
+queue_left	queue.h	/^int queue_left(queue_t * q);$/;"	p	signature:(queue_t * q)
+queue_lift	queue.c	/^int queue_lift(queue_t * q)$/;"	f	signature:(queue_t * q)
+queue_size	queue.c	/^int queue_size(queue_t * q)$/;"	f	signature:(queue_t * q)
+queue_size	queue.h	/^int queue_size(queue_t * q);$/;"	p	signature:(queue_t * q)
 queue_t	queue.h	/^}queue_t;$/;"	t	typeref:struct:_queue_
-rear	queue.h	/^	char * rear;$/;"	m	struct:_queue_
-sem	pworker.h	/^	sem_t sem;$/;"	m	struct:_pworker
-server	server.h	/^	pserver_t * server;$/;"	m	struct:_pserver_task_t
-size	list.h	/^	int size;$/;"	m	struct:_list_
-size	queue.h	/^	int size;$/;"	m	struct:_queue_
-task	pworker.c	/^	task_t task;$/;"	m	struct:_pworker_data	file:
-task_list	pworker.h	/^	list_t * task_list;$/;"	m	struct:_pworker
+rear	queue.h	/^	char * rear;$/;"	m	struct:_queue_	access:public
+sem	pworker.h	/^	sem_t sem;$/;"	m	struct:_pworker	access:public
+server	pclient.h	/^	pserver_t * server;$/;"	m	struct:_pclient	access:public
+server	server.h	/^	pserver_t * server;$/;"	m	struct:_pserver_task_t	access:public
+size	list.h	/^	int size;$/;"	m	struct:_list_	access:public
+size	queue.h	/^	int size;$/;"	m	struct:_queue_	access:public
+task	pworker.c	/^	task_t task;$/;"	m	struct:_pworker_data	file:	access:public
+task_list	pworker.h	/^	list_t * task_list;$/;"	m	struct:_pworker	access:public
 task_t	pworker.h	/^typedef void * (*task_t)(void * data);$/;"	t
-tid	ptimer.h	/^	pthread_t tid;$/;"	m	struct:_ptimer
-timer	server.h	/^	ptimer_t  timer;$/;"	m	struct:_pserver
-work_thread_list	pworker.h	/^	list_t * work_thread_list;$/;"	m	struct:_pworker
-worker	ptimer.c	/^	worker_t worker;$/;"	m	struct:_ptimer_timer	file:
-worker	server.h	/^	pworker_t worker;$/;"	m	struct:_pserver
+tid	ptimer.h	/^	pthread_t tid;$/;"	m	struct:_ptimer	access:public
+timer	server.h	/^	ptimer_t  timer;$/;"	m	struct:_pserver	access:public
+work_thread_list	pworker.h	/^	list_t * work_thread_list;$/;"	m	struct:_pworker	access:public
+worker	ptimer.c	/^	worker_t worker;$/;"	m	struct:_ptimer_timer	file:	access:public
+worker	server.h	/^	pworker_t worker;$/;"	m	struct:_pserver	access:public
 worker_t	ptimer.h	/^typedef void * (*worker_t)(void * data);$/;"	t
