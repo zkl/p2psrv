@@ -8,8 +8,8 @@ typedef struct _queue_
 	char * rear;
 }queue_t;
 
-int queue_init(queue_t * q, int maxsize);
-int queue_destroy(queue_t * q);
+queue_t * queue_create(int maxsize);
+int queue_free(queue_t * q);
 
 int queue_enqueue(queue_t * q, int size);
 int queue_dequeue(queue_t * q, int size);

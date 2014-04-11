@@ -31,20 +31,13 @@ typedef struct _pserver
 typedef struct _pserver_data_t
 {
 	int fd;
-	pclient_t * client;
+	void * client;
 }pserver_data_t;
-
-typedef struct _pserver_task_t
-{
-	pserver_t * server;
-	pserver_task_event_t event;
-	struct epoll_event ev;
-}pserver_task_t;
 
 void pserver_init(pserver_t * server, int max_listen, int port);
 void pserver_exec(pserver_t * server);
 void pserver_quit(pserver_t * server);
 void pserver_destroy(pserver_t * server);
-void pserver_outline(pserver_t * server, pclient_t * client);
+void pserver_outline(pserver_t * server, void * client);
 
 #endif
