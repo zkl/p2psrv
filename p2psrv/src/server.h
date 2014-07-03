@@ -15,6 +15,8 @@
 
 #define MAX_EPOLL_SIZE 1000
 
+typedef struct _pclient_ pclient_t;
+
 typedef struct _pserver
 {
 	int listen_fd;
@@ -38,6 +40,7 @@ void pserver_init(pserver_t * server, int max_listen, int port);
 void pserver_exec(pserver_t * server);
 void pserver_quit(pserver_t * server);
 void pserver_destroy(pserver_t * server);
-void pserver_outline(pserver_t * server, void * client);
+void pserver_outline(pserver_t * server, pclient_t * client);
+void pserver_timer(pclient_t * client, int interval, void * parm);
 
 #endif

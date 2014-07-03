@@ -21,9 +21,15 @@
 #include "pworker.h"
 #include "log.h"
 
-void * pserver_accept(void * server);
-void * pserver_datain(void * client);
-void * pserver_dataot(void * client);
+void * pserver_accept (void * server);
+
+void * pserver_online (void * server);
+void * pserver_offline(void * client);
+void * pserver_datain (void * client);
+void * pserver_dataot (void * client);
+void * pserver_timeout(void * client);
+void * pserver_error  (void * client);
+
 int    pserver_set_keep_alive(int fd, int time, int check_time, 
 			int check_cnt);
 int    pserver_set_no_blocking(int fd);
@@ -86,6 +92,7 @@ void * pserver_dataot(void * client)
 	return 0;
 }
 
+/*
 void pserver_outline(pserver_t * server, void * client)
 {
 	//pserver_data_t 忘记删除
@@ -94,6 +101,7 @@ void pserver_outline(pserver_t * server, void * client)
 	server->client_num--;
 	free(pclient_srv_data(client));
 }
+*/
 
 int pserver_set_no_blocking(int fd)
 {
@@ -210,6 +218,8 @@ void pserver_exec(pserver_t * server)
 	server->client_num = 1;
 	while(1)
 	{
+		/* 删除下线的用户信息 */
+		/* 删除任务，和时钟 */
 		int nfds = epoll_wait(server->kdpfd, events, 
 			server->client_num, -1);
 
@@ -259,3 +269,4 @@ void pserver_destroy(pserver_t * server)
 
 	DEBUG_SERVER_PRINT("释放服务器资源\n");
 }
+

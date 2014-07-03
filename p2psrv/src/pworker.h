@@ -14,8 +14,8 @@
 typedef struct _pworker
 {
 	int goon;
-	list_t * task_list;
-	list_t * work_thread_list;
+	linked_list_t * task_list;
+	linked_list_t * work_thread_list;
 	pthread_mutex_t mp;
 	sem_t sem;
 }pworker_t;
@@ -23,6 +23,7 @@ typedef struct _pworker
 typedef void * (*task_t)(void * data);
 
 void pworker_create(pworker_t * worker, int max_size);
+void pworker_remove(pworker_t * worker, void * data);
 void pworker_append(pworker_t * worker, task_t task, void * data);
 void pworker_quit(pworker_t * worker);
 void pworker_destroy(pworker_t * worker);

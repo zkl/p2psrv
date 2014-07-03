@@ -4,7 +4,7 @@
 #include "ptimer.h"
 
 
-typedef struct  _ptimer_timer
+typedef struct  _ptimer_timer_
 {
 	unsigned int delay;
 	worker_t worker;
@@ -16,10 +16,31 @@ void * ptimer_routine(void * arg);
 void ptimer_create(ptimer_t * timer)
 {
 	timer->goon = 1;
-	timer->events = list_create();
+	timer->events = linked_list_create();
 	pthread_mutex_init(&timer->mp, 0);
 	pthread_cond_init (&timer->cv, 0);
 	pthread_create(&timer->tid, 0, &ptimer_routine, timer);
+}
+
+void ptimer_clear (ptimer_t * timer, void * data)
+{
+	pthread_mutex_lock(&timer->mp);
+	linked_list_node_t * node = linked_list_first(timer->events);
+	while(node)
+	{
+		ptimer_timer_t * ev = 
+			(ptimer_timer_t *)linked_list_data(node);
+		if(ev->data == data)
+		{
+			free(ev);
+			node = linked_list_remove(timer->events, node);
+		}
+		else
+		{
+			node = linked_list_next(node);
+		}
+	}
+	pthread_mutex_unlock(&timer->mp);
 }
 
 void * ptimer_routine(void * arg)
@@ -29,7 +50,7 @@ void * ptimer_routine(void * arg)
 	while(1)
 	{
 		pthread_mutex_lock(&timer->mp);
-		int size = timer->events->size;
+		int size = linked_list_size(timer->events);
 		if(size <= 0)
 		{
 			pthread_mutex_unlock(&timer->mp);
@@ -39,23 +60,25 @@ void * ptimer_routine(void * arg)
 		if(timer->goon <= 0)
 			break;
 
-		list_t * list = timer->events;
+		linked_list_t  * list = timer->events;
 
-		list_node_t * node;
-		for(node = list->head; node; )
+		linked_list_node_t  * node;
+		for(node = linked_list_first(list); node; )
 		{
-			ptimer_timer_t * ev = (ptimer_timer_t *)(node->data);
+			ptimer_timer_t * ev = 
+				(ptimer_timer_t *)linked_list_data(node);
+
 			if(ev->delay == 0)
 			{
 				ev->worker(ev->data);
 
 				free(ev);
-				node = list_delnde(list, node);
+				node = linked_list_remove(list, node);
 			}
 			else
 			{
 				ev->delay--;
-				node = node->next;
+				node = linked_list_next(node);
 			}
 		}
 
@@ -76,7 +99,7 @@ void ptimer_append(ptimer_t * timer, worker_t worke,
 	ev->data = data;
 
 	pthread_mutex_lock(&timer->mp);
-	list_append(timer->events, ev);
+	linked_list_insert(timer->events, 0, ev);
 	pthread_cond_signal(&timer->cv);
 	pthread_mutex_unlock(&timer->mp);
 }
@@ -93,7 +116,7 @@ void ptimer_destroy(ptimer_t * timer)
 {
 	void * status;
 	pthread_join(timer->tid, status);
-	list_destroy(timer->events);
+	linked_list_free(timer->events);
 	pthread_mutex_destroy(&timer->mp);
 	pthread_cond_destroy(&timer->cv);
 }
